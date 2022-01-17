@@ -114,7 +114,7 @@ public:
 
 	*/
 
-	const size_t search(const int data);
+	const int search(const int data);
 
 	/*!
 	 \brief Метод обновления значения в списке.

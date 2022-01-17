@@ -92,22 +92,145 @@ namespace ApiTests
 			Assert::AreEqual(expected, result.size());
 		};
 
-		TEST_METHOD(TestSearch)
+		TEST_METHOD(TestSearchEnd)
 		{
-			const auto result = new ols();
-			Assert::IsNotNull(result);
+			ols result;
+			result.add(100);
+			result.add(500);
+			result.add(3);
+			result.add(-100);
+
+			int temp = result.search(-100);
+			int expected = 3;
+			Assert::AreEqual(expected, temp);
+			Assert::AreEqual(-100, result.read(temp));
 		};
 
-		TEST_METHOD(TestUpdateItem)
+		TEST_METHOD(TestSearchMiddle)
 		{
-			const auto result = new ols();
-			Assert::IsNotNull(result);
+			ols result;
+			result.add(100);
+			result.add(500);
+			result.add(3);
+			result.add(-100);
+
+			int temp = result.search(3);
+			int expected = 2;
+			Assert::AreEqual(expected, temp);
+			Assert::AreEqual(3, result.read(temp));
 		};
 
-		TEST_METHOD(TestSize)
+		TEST_METHOD(TestSearchStart)
 		{
-			const auto result = new ols();
-			Assert::IsNotNull(result);
+			ols result;
+			result.add(100);
+			result.add(500);
+			result.add(3);
+			result.add(-100);
+
+			int temp = result.search(100);
+			int expected = 0;
+			Assert::AreEqual(expected, temp);
+			Assert::AreEqual(100, result.read(temp));
 		};
+
+		TEST_METHOD(TestUpdateItemMiddle)
+		{
+			ols result;
+			result.add(1);
+			result.add(50);
+			result.add(-3);
+			result.add(-100);
+			
+			result.update(2, 3);
+
+			Assert::AreEqual(3, result.read(2));
+		};
+
+		TEST_METHOD(TestUpdateItemStart)
+		{
+			ols result;
+			result.add(1);
+			result.add(50);
+			result.add(-3);
+			result.add(-100);
+
+			result.update(0, 1000);
+
+			Assert::AreEqual(1000, result.read(0));
+		};
+
+		TEST_METHOD(TestUpdateItemEnd)
+		{
+			ols result;
+			result.add(1);
+			result.add(50);
+			result.add(-3);
+			result.add(-100);
+
+			result.update(3, -15);
+
+			Assert::AreEqual(-15, result.read(3));
+		};
+
+		TEST_METHOD(TestSizeZero)
+		{
+			ols result;
+			size_t expected = 0;
+			Assert::AreEqual(expected, result.size());
+		};
+
+		TEST_METHOD(TestSizeNoZero)
+		{
+			ols result;
+			result.add(1);
+			result.add(1);
+			result.add(1);
+			size_t expected = 3;
+			Assert::AreEqual(expected, result.size());
+		};
+		TEST_METHOD(TestOperatorZero)
+		{
+			/* Тест оператора << при пустом списке*/
+			ols result;
+			std::stringstream s;
+			s << result;
+			string temp = "";
+			Assert::AreEqual(s.str(), temp);
+		}
+
+		TEST_METHOD(TestOperatorNoZero)
+		{
+			/* Тест оператора << при заполненном списке*/
+			ols result;
+			result.add(1);
+			result.add(2);
+			result.add(3);
+			std::stringstream s;
+			s << result;
+			string temp = "1 2 3 ";
+			Assert::AreEqual(s.str(), temp);
+		}
+
+		TEST_METHOD(TestIndexZero)
+		{
+			/* Тест обращения по индексу при пустом списке*/
+			ols result;
+			Assert::ExpectException<std::out_of_range>([&]
+				{
+					result[2];
+				});
+		}
+
+		TEST_METHOD(TestIndexNoZero)
+		{
+			/* Тест обращения по индексу при заполненном списке*/
+			ols result;
+			result.add(1);
+			result.add(2);
+			result.add(3);
+			int temp = 3;
+			Assert::AreEqual(temp, result[2]);
+		}
 	};
 }

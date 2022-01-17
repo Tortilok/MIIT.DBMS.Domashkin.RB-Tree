@@ -1,10 +1,11 @@
 ﻿#include "ols.h"
+#include <stdexcept>
 
 ols::ols() : first(nullptr), last(nullptr), size_list(0) {}
 
 ols::~ols()
 {
-	while (this->size() != 0) {
+	while (size_list != 0) {
 		node* temp = first->next;
 		if (first != nullptr) {
 			delete first;
@@ -48,7 +49,7 @@ void ols::remove(const int index) {
 		return;
 	}
 	if (index >= size_list)
-		return;
+		throw std::out_of_range("Out of range.");
 	else if (index == size_list - 1) {
 		int i = 0;
 		node* temp = first;
@@ -88,26 +89,25 @@ void ols::remove(const int index) {
 	}
 };
 
-const size_t ols::search(const int data) {
+const int ols::search(const int data) {
 	node* temp = first;
-	for (size_t i = 1; i < this->size(); i++)
+	for (int i = 0; i < size_list; i++)
 	{
 		if (temp->data == data)
 			return i;
 		temp = temp->next;
 	}
-
 };
 
 void ols::update(const size_t index, const int data)
 {
 	node* temp = first;
 	size_t num = index;
-	const size_t begin = 1;
+	const size_t begin = 0;
 	while (num != begin)
 	{
 		temp = temp->next;
-		num--;
+		num -= 1;
 	}
 	temp->data = data;
 };
@@ -125,25 +125,29 @@ ostream& operator <<(ostream& out, ols& l) {
 };
 
 int& ols::operator[] (const int index) {
+	if (index >= size_list)
+		throw std::out_of_range("Out of range.");
 	node* cur = first;
 	int i = 0;
 	while (cur != nullptr) {
 		if (i == index) {
 			return cur->data;
 		}
-		else i++;
+		else i += 1;
 		cur = cur->next;
 	}
 };
 
 const int& ols::operator[] (const int index) const {
+	if (index >= size_list)
+		throw std::out_of_range("Out of range.");
 	node* cur = first;
 	int i = 0;
 	while (cur != nullptr) {
 		if (i == index) {
 			return cur->data;
 		}
-		else i++;
+		else i += 1;
 		cur = cur->next;
 	}
 };
